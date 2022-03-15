@@ -32,4 +32,11 @@ def create_app(test_config=None):
     from . import db
     db.init_app(app)
 
+    from . import composer
+    app.register_blueprint(composer.bp)
+
+    from . import song
+    app.register_blueprint(song.bp)
+    app.add_url_rule('/', endpoint='index')
+
     return app
