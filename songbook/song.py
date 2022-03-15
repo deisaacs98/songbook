@@ -66,10 +66,24 @@ def get_song(id, check_composer=True):
     return song
 
 
+def get_tracks(song_id):
+    db = get_db()
+    tracks = db.execute(
+        'SELECT p.id, composer_id, song_id, instrument, created, username'
+        ' FROM track p JOIN user u ON p.composer_id = u.id'
+        ' WHERE p.song_id = ?'
+        ' ORDER BY created ASC',
+        (song_id,)
+    ).fetchall()
+
+    return tracks
+
+
 @bp.route('/<int:id>/update', methods=('GET', 'POST'))
 @login_required
 def update(id):
     song = get_song(id)
+    tracks = get_tracks(id)
     if request.method == 'POST':
         title = request.form['title']
         author = request.form['author']
